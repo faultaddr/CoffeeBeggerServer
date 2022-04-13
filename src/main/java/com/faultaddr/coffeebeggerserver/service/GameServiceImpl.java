@@ -2,101 +2,88 @@ package com.faultaddr.coffeebeggerserver.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.faultaddr.coffeebeggerserver.dao.DaoFactory;
 import com.faultaddr.coffeebeggerserver.entity.MGameEntity;
 import com.faultaddr.coffeebeggerserver.entity.MUserEntity;
-import com.faultaddr.coffeebeggerserver.utils.DbHelper;
+import com.faultaddr.coffeebeggerserver.repository.GameRepository;
+import com.faultaddr.coffeebeggerserver.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
+@Transactional
 @EnableAutoConfiguration
 public class GameServiceImpl implements GameService {
-    private static volatile GameServiceImpl gameService = null;
-
-    public static GameServiceImpl getInstance() {
-        if (gameService == null) {
-            synchronized (GameServiceImpl.class) {
-                if (gameService == null) {
-                    gameService = new GameServiceImpl();
-                }
-            }
-        }
-        return gameService;
-    }
-
+    @Autowired
+    GameRepository gameRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public MGameEntity getGameById(String gameId) {
-        DbHelper<MGameEntity> dbHelper = new DbHelper<>();
-        List<MGameEntity> entityList = dbHelper.optionHelper(String.format("select * from game  where gameId=%s", gameId), new MGameEntity());
-        if (entityList != null && !entityList.isEmpty()) {
-            return entityList.get(0);
-        } else {
-            return null;
-        }
+        MGameEntity entity = gameRepository.findMGameEntityByGameId(gameId);
+        return entity;
     }
 
     @Override
     public String getGameResultById(String gameId) {
-        DbHelper<MGameEntity> dbHelper = new DbHelper<>();
-        List<MGameEntity> entityList = dbHelper.optionHelper(String.format("select * from game  where gameId=%s", gameId), new MGameEntity());
-        if (entityList != null && !entityList.isEmpty()) {
-            return entityList.get(0).getResult();
-        } else {
-            return "";
-        }
+        MGameEntity entity = gameRepository.findMGameEntityByGameId(gameId);
+        return entity.getResult();
     }
 
     @Override
-    public boolean createGame(String gameId, MUserEntity bean) {
+    public boolean createGame(String gameId, MUserEntity userEntity) {
         MGameEntity entity = new MGameEntity();
         entity.setGameId(gameId);
         entity.setResult("");
         List<MUserEntity> userList = new ArrayList<>();
-        userList.add(bean);
+        userList.add(userEntity);
         entity.setParticipant(JSONArray.toJSONString(userList));
-        DaoFactory<MGameEntity> factory = new DaoFactory<>();
-        factory.save(entity);
+        gameRepository.save(entity);
+        MUserEntity user = userRepository.findMUserEntityByAvatar(userEntity.getAvatar());
+        if (user == null) {
+            userRepository.save(userEntity);
+        }
         return true;
     }
 
     @Override
-    public boolean joinGame(String gameId, MUserEntity bean) {
-        DbHelper<MGameEntity> dbHelper = new DbHelper<>();
-        List<MGameEntity> entityList = dbHelper.optionHelper(String.format("select * from game  where gameId=%s", gameId), new MGameEntity());
-        if (entityList != null && !entityList.isEmpty()) {
-            String participant = entityList.get(0).getParticipant();
-            List<MUserEntity> array = JSONArray.parseArray(participant, MUserEntity.class);
-            if (bean != null) {
-                array.add(bean);
+    public boolean joinGame(String gameId, MUserEntity userEntity) {
+        MGameEntity gameEntity = gameRepository.findMGameEntityByGameId(gameId);
+        if (gameEntity != null) {
+            List<MUserEntity> array = JSONArray.parseArray(gameEntity.getParticipant(), MUserEntity.class);
+            if (userEntity != null) {
+                array.add(userEntity);
             }
             String users = JSON.toJSONString(array);
-            dbHelper.optionHelper(String.format("update game set participant=%s where gameId=%s", users, entityList.get(0).getGameId()), entityList.get(0));
+            gameRepository.updateMGameEntityParticipantByGameId(users, gameId);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     @Override
     public boolean updateGameResult(String gameId, String result) {
-        DbHelper<MGameEntity> dbHelper = new DbHelper<>();
-        dbHelper.optionHelper(String.format("update game set result=%s where gameId=%s", result, gameId), new MGameEntity());
+        gameRepository.updateMGameEntityResultByGameId(result, gameId);
         return true;
     }
 
     @Override
     public List<MUserEntity> getParticipantByGameId(String gameId) {
-        DbHelper<MGameEntity> dbHelper = new DbHelper<>();
-        List<MGameEntity> entityList = dbHelper.optionHelper(String.format("select * from game  where gameId=%s", gameId), new MGameEntity());
-        if (entityList != null && !entityList.isEmpty()) {
-            String participant = entityList.get(0).getParticipant();
+        Logger.getGlobal().info(String.format("select * from game where gameId='%s'", gameId));
+        MGameEntity gameEntity = gameRepository.findMGameEntityByGameId(gameId);
+        if (gameEntity != null) {
+            String participant = gameEntity.getParticipant();
             return JSONArray.parseArray(participant, MUserEntity.class);
+        } else {
+            return null;
         }
-        return null;
     }
 
 

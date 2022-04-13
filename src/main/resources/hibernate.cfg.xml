@@ -9,15 +9,17 @@
         <property name="dialect">
             org.hibernate.dialect.MySQLDialect
         </property>
+        <property name="connection.autocommit">true</property>
         <!--配置数据库的驱动程序，Hibernate在连接数据库时，需要用到数据库的驱动程序-->
         <!--连接数据库是用户名-->
         <property name="connection.username">root</property>
-        <!--连接数据库是密码-->
         <property name="connection.password">123456Root!</property>
-        <mapping resource="hibernate.hbm.xml"/>
+        <!--连接数据库是密码-->
+        <mapping class="com.faultaddr.coffeebeggerserver.entity.MGameEntity"/>
+        <mapping resource="MGameEntity.hbm.xml"/>
+        <mapping class="com.faultaddr.coffeebeggerserver.entity.MUserEntity"/>
+        <mapping resource="MUserEntity.hbm.xml"/>
 
-        <!-- <property name="connection.username"/> -->
-        <!-- <property name="connection.password"/> -->
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

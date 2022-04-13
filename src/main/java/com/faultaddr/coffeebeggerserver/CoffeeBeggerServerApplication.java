@@ -6,8 +6,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = "com.faultaddr.coffeebeggerserver.repository")
 public class CoffeeBeggerServerApplication {
 
     public static void main(String[] args) {
@@ -15,7 +17,7 @@ public class CoffeeBeggerServerApplication {
     }
 
     @Bean
-    public HttpMessageConverters fastJsonHttpMessageConverters(){
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastConverter.setFastJsonConfig(fastJsonConfig);

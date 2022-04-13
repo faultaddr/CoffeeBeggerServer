@@ -3,12 +3,12 @@ package com.faultaddr.coffeebeggerserver.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "game", schema = "CoffeeBegger")
+@Table(name = "game", schema = "CoffeeBegger", catalog = "")
 public class MGameEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
     @Basic
     @Column(name = "participant", nullable = false, length = -1)
     private String participant;
@@ -16,14 +16,14 @@ public class MGameEntity {
     @Column(name = "result", nullable = true, length = 255)
     private String result;
     @Basic
-    @Column(name = "gameId", nullable = true, length = 255)
+    @Column(name = "game_id", nullable = true, length = 255)
     private String gameId;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

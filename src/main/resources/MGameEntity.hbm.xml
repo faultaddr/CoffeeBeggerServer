@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.faultaddr.coffeebeggerserver.entity.MGameEntity" table="game" schema="CoffeeBegger">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+        </id>
+        <property name="participant">
+            <column name="participant" sql-type="text"/>
+        </property>
+        <property name="result">
+            <column name="result" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="gameId">
+            <column name="game_id" sql-type="varchar(255)" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

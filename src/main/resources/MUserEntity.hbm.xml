@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.faultaddr.coffeebeggerserver.entity.MUserEntity" table="user" schema="CoffeeBegger">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+        </id>
+        <property name="avatar">
+            <column name="avatar" sql-type="varchar(255)"/>
+        </property>
+        <property name="city">
+            <column name="city" sql-type="varchar(255)" not-null="true"/>
+        </property>
+        <property name="gender">
+            <column name="gender" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+        <property name="province">
+            <column name="province" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+        <property name="countryCode">
+            <column name="country_code" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+        <property name="nickName">
+            <column name="nick_name" sql-type="varchar(100)" length="100" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>
