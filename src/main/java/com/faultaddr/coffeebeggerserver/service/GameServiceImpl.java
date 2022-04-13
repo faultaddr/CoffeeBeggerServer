@@ -37,19 +37,20 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public boolean createGame(String gameId, MUserEntity userEntity) {
+    public MGameEntity createGame(String gameId, int code,MUserEntity userEntity) {
         MGameEntity entity = new MGameEntity();
         entity.setGameId(gameId);
         entity.setResult("");
+        entity.setInvitationCode(code);
         List<MUserEntity> userList = new ArrayList<>();
         userList.add(userEntity);
         entity.setParticipant(JSONArray.toJSONString(userList));
-        gameRepository.save(entity);
+        MGameEntity savedEntity = gameRepository.save(entity);
         MUserEntity user = userRepository.findMUserEntityByAvatar(userEntity.getAvatar());
         if (user == null) {
             userRepository.save(userEntity);
         }
-        return true;
+        return savedEntity;
     }
 
     @Override

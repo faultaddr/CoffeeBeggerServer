@@ -17,5 +17,8 @@
         <property name="gameId">
             <column name="game_id" sql-type="varchar(255)" not-null="true"/>
         </property>
+        <property name="invitationCode">
+            <column name="invitation_code" sql-type="int" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

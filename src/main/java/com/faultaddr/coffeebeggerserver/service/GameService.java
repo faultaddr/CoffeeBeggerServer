@@ -10,7 +10,7 @@ public interface GameService {
 
     String getGameResultById(String id);
 
-    boolean createGame(String gameId, MUserEntity bean);
+    MGameEntity createGame(String gameId, int code,MUserEntity bean);
 
     boolean joinGame(String gameId, MUserEntity bean);
 

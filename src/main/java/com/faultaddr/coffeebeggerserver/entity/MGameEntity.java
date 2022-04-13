@@ -18,6 +18,9 @@ public class MGameEntity {
     @Basic
     @Column(name = "game_id", nullable = true, length = 255)
     private String gameId;
+    @Basic
+    @Column(name = "invitation_code", nullable = true)
+    private Integer invitationCode;
 
     public Integer getId() {
         return id;
@@ -49,5 +52,13 @@ public class MGameEntity {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    public Integer getInvitationCode() {
+        return invitationCode;
+    }
+
+    public void setInvitationCode(Integer invitationCode) {
+        this.invitationCode = invitationCode;
     }
 }

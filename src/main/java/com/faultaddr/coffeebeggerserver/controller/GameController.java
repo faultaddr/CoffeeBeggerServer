@@ -7,6 +7,7 @@ import com.faultaddr.coffeebeggerserver.bean.APIResult;
 import com.faultaddr.coffeebeggerserver.bean.InputMessage;
 import com.faultaddr.coffeebeggerserver.bean.Message;
 import com.faultaddr.coffeebeggerserver.bean.OutputMessage;
+import com.faultaddr.coffeebeggerserver.entity.MGameEntity;
 import com.faultaddr.coffeebeggerserver.entity.MUserEntity;
 import com.faultaddr.coffeebeggerserver.form.JoinGameForm;
 import com.faultaddr.coffeebeggerserver.service.GameServiceImpl;
@@ -26,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @Controller
 @EnableAutoConfiguration
@@ -38,9 +38,9 @@ public class GameController {
     @ResponseBody
     public APIResult createGame(@RequestBody MUserEntity userEntity) {
         String generatedGameId = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-        Logger.getGlobal().info(JSON.toJSONString(userEntity));
-        gameService.createGame(generatedGameId, userEntity);
-        return APIResult.createSuccessMessage(generatedGameId);
+        int generatedInvitationCode = new Random().nextInt(999999);
+        MGameEntity gameEntity = gameService.createGame(generatedGameId,generatedInvitationCode, userEntity);
+        return APIResult.createSuccessMessage(JSON.toJSONString(gameEntity));
     }
 
     @RequestMapping(value = "/POST/game/joinGame")
