@@ -1,6 +1,7 @@
-package com.faultaddr.coffeebeggerserver.sender;
+package com.faultaddr.coffeebeggerserver.service;
 
 import com.faultaddr.coffeebeggerserver.listener.RedisChannel;
+import com.faultaddr.coffeebeggerserver.sender.MsgDTO;
 import com.faultaddr.coffeebeggerserver.websocket.WebSocketSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

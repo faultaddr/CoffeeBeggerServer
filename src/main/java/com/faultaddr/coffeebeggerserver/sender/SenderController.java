@@ -1,6 +1,6 @@
 package com.github.taven.sender;
 
-import com.faultaddr.coffeebeggerserver.sender.SenderService;
+import com.faultaddr.coffeebeggerserver.service.SenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

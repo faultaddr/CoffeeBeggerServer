@@ -1,10 +1,11 @@
-package com.faultaddr.coffeebeggerserver.websocket;
+package com.faultaddr.coffeebeggerserver.controller;
 
 import com.faultaddr.coffeebeggerserver.websocket.WebSocketSupport;
 import org.springframework.stereotype.Controller;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.util.logging.Logger;
 
 @ServerEndpoint(value = "/message_websocket")
 @Controller
@@ -15,7 +16,7 @@ public class MsgWebsocketController {
         // 先鉴权，如果鉴权通过则存储WebsocketSession，否则关闭连接，这里省略了鉴权的代码
         WebSocketSupport.storageSession(session);
         // session.setMaxIdleTimeout(60000); // 可以设置session最大空闲时间
-        System.out.println("session open. ID:" + session.getId());
+        Logger.getGlobal().info("session open. ID:" + session.getId());
     }
 
     /**
@@ -32,7 +33,7 @@ public class MsgWebsocketController {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("get client msg. ID:" + session.getId() + ". msg:" + message);
+        Logger.getGlobal().info("get client msg. ID:" + session.getId() + ". msg:" + message);
     }
 
     /**

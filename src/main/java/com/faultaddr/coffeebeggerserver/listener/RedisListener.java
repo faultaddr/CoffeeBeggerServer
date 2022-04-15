@@ -26,7 +26,7 @@ public class RedisListener {
     private List<RedisMsgReceiver> receiverList;
 
     @Bean
-    public RedisMessageListenerContainer container(LettuceConnectionFactory connectionFactory) {
+    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         if (receiverList != null) {
