@@ -78,21 +78,21 @@ public class GameController {
         }
     }
 
-    @RequestMapping(value = "/game.syncResult")
-    @SendTo("/game/public")
-    public OutputMessage send(@Payload InputMessage message) {
-        String time = new SimpleDateFormat("HH:mm").format(new Date());
-        String gameId = message.getGameId();
-        String result = gameService.getGameResultById(gameId);
-        return new OutputMessage(message.getGameId(), result, Message.MessageType.RESULT, time);
-    }
-
-    @RequestMapping(value = "/game.addUser")
-    @SendTo("/game/public")
-    public OutputMessage addUser(@Payload InputMessage message, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("gameId", message.getGameId());
-        String time = new SimpleDateFormat("HH:mm").format(new Date());
-        return new OutputMessage(message.getGameId(), "", Message.MessageType.JOIN, time);
-    }
+//    @RequestMapping(value = "/game")
+//    @SendTo("/game/public/syncResult")
+//    public OutputMessage send(@Payload InputMessage message) {
+//        String time = new SimpleDateFormat("HH:mm").format(new Date());
+//        String gameId = message.getGameId();
+//        String result = gameService.getGameResultById(gameId);
+//        return new OutputMessage(message.getGameId(), result, Message.MessageType.RESULT, time);
+//    }
+//
+//    @RequestMapping(value = "/game")
+//    @SendTo("/game/public/addUser")
+//    public OutputMessage addUser(@Payload InputMessage message, SimpMessageHeaderAccessor headerAccessor) {
+//        headerAccessor.getSessionAttributes().put("gameId", message.getGameId());
+//        String time = new SimpleDateFormat("HH:mm").format(new Date());
+//        return new OutputMessage(message.getGameId(), "", Message.MessageType.JOIN, time);
+//    }
 
 }
