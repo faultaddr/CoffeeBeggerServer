@@ -13,19 +13,20 @@ import org.springframework.stereotype.Repository;
 @Table(appliesTo = "game")
 @Qualifier("GameRepository")
 public interface GameRepository extends CrudRepository<MGameEntity, Long> {
-    @SuppressWarnings("unchecked")
-    public MGameEntity save(MGameEntity mBeatEntity);
+  @SuppressWarnings("unchecked")
+  MGameEntity save(MGameEntity mBeatEntity);
 
-    @Query("select m from MGameEntity  m where m.gameId=:gameId")
-    public MGameEntity findMGameEntityByGameId(@Param("gameId") String gameId);
+  @Query("select m from MGameEntity  m where m.gameId=:gameId")
+  MGameEntity findMGameEntityByGameId(@Param("gameId") String gameId);
 
-    @Modifying
-    @Query("update MGameEntity m set m.result =:result where m.gameId=:gameId")
-    public void updateMGameEntityResultByGameId(String result, String gameId);
+  @Query("select m from MGameEntity  m where m.invitationCode=:invitationCode")
+  MGameEntity findMGameEntityByInvitationCode(@Param("invitationCode") int code);
 
-    @Modifying
-    @Query("update MGameEntity m set m.participant =:participant where m.gameId=:gameId")
-    public void updateMGameEntityParticipantByGameId(String participant, String gameId);
+  @Modifying
+  @Query("update MGameEntity m set m.result =:result where m.gameId=:gameId")
+  void updateMGameEntityResultByGameId(String result, String gameId);
 
-
+  @Modifying
+  @Query("update MGameEntity m set m.participant =:participant where m.gameId=:gameId")
+  void updateMGameEntityParticipantByGameId(String gameId, String participant);
 }

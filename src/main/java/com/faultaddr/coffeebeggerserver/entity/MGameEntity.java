@@ -5,60 +5,64 @@ import javax.persistence.*;
 @Entity
 @Table(name = "game", schema = "CoffeeBegger", catalog = "")
 public class MGameEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
-    @Basic
-    @Column(name = "participant", nullable = false, length = -1)
-    private String participant;
-    @Basic
-    @Column(name = "result", nullable = true, length = 255)
-    private String result;
-    @Basic
-    @Column(name = "game_id", nullable = true, length = 255)
-    private String gameId;
-    @Basic
-    @Column(name = "invitation_code", nullable = true)
-    private Integer invitationCode;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @Column(name = "id", nullable = false)
+  private Integer id;
 
-    public Integer getId() {
-        return id;
-    }
+  @Basic
+  @Column(name = "participant", nullable = false, length = -1)
+  private String participant;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @Basic
+  @Column(name = "result", nullable = true, length = 255)
+  private String result;
 
-    public String getParticipant() {
-        return participant;
-    }
+  @Basic
+  @Column(name = "game_id", nullable = true, length = 255)
+  private String gameId;
 
-    public void setParticipant(String participant) {
-        this.participant = participant;
-    }
+  @Basic
+  @Column(name = "invitation_code", nullable = true)
+  private Integer invitationCode;
 
-    public String getResult() {
-        return result;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setResult(String result) {
-        this.result = result;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public String getGameId() {
-        return gameId;
-    }
+  public String getParticipant() {
+    return participant;
+  }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
+  public void setParticipant(String participant) {
+    this.participant = participant;
+  }
 
-    public Integer getInvitationCode() {
-        return invitationCode;
-    }
+  public String getResult() {
+    return result;
+  }
 
-    public void setInvitationCode(Integer invitationCode) {
-        this.invitationCode = invitationCode;
-    }
+  public void setResult(String result) {
+    this.result = result;
+  }
+
+  public String getGameId() {
+    return gameId;
+  }
+
+  public void setGameId(String gameId) {
+    this.gameId = gameId;
+  }
+
+  public Integer getInvitationCode() {
+    return invitationCode;
+  }
+
+  public void setInvitationCode(Integer invitationCode) {
+    this.invitationCode = invitationCode;
+  }
 }

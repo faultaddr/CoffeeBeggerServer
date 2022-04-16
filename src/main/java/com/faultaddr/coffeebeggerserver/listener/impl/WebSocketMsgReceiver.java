@@ -11,17 +11,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebSocketMsgReceiver implements RedisMsgReceiver {
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+  @Autowired private RedisTemplate redisTemplate;
 
-    @Override
-    public String getChannelName() {
-        return RedisChannel.WS_SEND_MSG;
-    }
+  @Override
+  public String getChannelName() {
+    return RedisChannel.WS_SEND_MSG;
+  }
 
-    @Override
-    public void receiveMsg(String message) {
-        MsgDTO msg = (MsgDTO) redisTemplate.getValueSerializer().deserialize(message.getBytes());
-        WebSocketSupport.tryPush(msg);
-    }
+  @Override
+  public void receiveMsg(String message) {
+    MsgDTO msg = (MsgDTO) redisTemplate.getValueSerializer().deserialize(message.getBytes());
+    WebSocketSupport.tryPush(msg);
+  }
 }

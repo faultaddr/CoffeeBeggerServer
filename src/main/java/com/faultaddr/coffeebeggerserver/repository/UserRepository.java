@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @Table(appliesTo = "user")
 @Qualifier("UserRepository")
 public interface UserRepository extends CrudRepository<MUserEntity, Long> {
-    @Query("select m from MUserEntity  m where m.avatar=:avatar")
-    public MUserEntity findMUserEntityByAvatar(String avatar);
+  @Query("select m from MUserEntity  m where m.avatar=:avatar")
+  MUserEntity findMUserEntityByAvatar(String avatar);
 }

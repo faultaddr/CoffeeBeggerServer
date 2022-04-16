@@ -19,73 +19,91 @@ import java.util.logging.Logger;
 @Transactional
 @EnableAutoConfiguration
 public class GameServiceImpl implements GameService {
-    @Autowired
-    GameRepository gameRepository;
-    @Autowired
-    UserRepository userRepository;
+  @Autowired GameRepository gameRepository;
+  @Autowired UserRepository userRepository;
 
-    @Override
-    public MGameEntity getGameById(String gameId) {
-        MGameEntity entity = gameRepository.findMGameEntityByGameId(gameId);
-        return entity;
+  @Override
+  public MGameEntity getGameById(String gameId) {
+    MGameEntity entity = gameRepository.findMGameEntityByGameId(gameId);
+    return entity;
+  }
+
+  @Override
+  public String getGameResultById(String gameId) {
+    MGameEntity entity = gameRepository.findMGameEntityByGameId(gameId);
+    return entity.getResult();
+  }
+
+  @Override
+  public MGameEntity createGame(String gameId, int code, MUserEntity userEntity) {
+    MGameEntity entity = new MGameEntity();
+    entity.setGameId(gameId);
+    entity.setResult("");
+    entity.setInvitationCode(code);
+    List<MUserEntity> userList = new ArrayList<>();
+    userList.add(userEntity);
+    entity.setParticipant(JSONArray.toJSONString(userList));
+    MGameEntity savedEntity = gameRepository.save(entity);
+    MUserEntity user = userRepository.findMUserEntityByAvatar(userEntity.getAvatar());
+    if (user == null) {
+      userRepository.save(userEntity);
     }
+    return savedEntity;
+  }
 
-    @Override
-    public String getGameResultById(String gameId) {
-        MGameEntity entity = gameRepository.findMGameEntityByGameId(gameId);
-        return entity.getResult();
+  /**
+   * @param id
+   * @return
+   */
+  @Override
+  public MGameEntity getGameByInvitationId(String id) {
+    Logger.getGlobal().info("invitationCode: " + id);
+
+    return gameRepository.findMGameEntityByInvitationCode(Integer.parseInt(id));
+  }
+
+  @Override
+  public boolean joinGame(String gameId, MUserEntity userEntity) {
+    MGameEntity gameEntity = gameRepository.findMGameEntityByGameId(gameId);
+    if (gameEntity != null) {
+      List<MUserEntity> array =
+          JSONArray.parseArray(gameEntity.getParticipant(), MUserEntity.class);
+      if (userEntity != null) {
+        array.add(userEntity);
+      }
+      String users = JSON.toJSONString(array);
+      gameRepository.updateMGameEntityParticipantByGameId(users, gameId);
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    @Override
-    public MGameEntity createGame(String gameId, int code,MUserEntity userEntity) {
-        MGameEntity entity = new MGameEntity();
-        entity.setGameId(gameId);
-        entity.setResult("");
-        entity.setInvitationCode(code);
-        List<MUserEntity> userList = new ArrayList<>();
-        userList.add(userEntity);
-        entity.setParticipant(JSONArray.toJSONString(userList));
-        MGameEntity savedEntity = gameRepository.save(entity);
-        MUserEntity user = userRepository.findMUserEntityByAvatar(userEntity.getAvatar());
-        if (user == null) {
-            userRepository.save(userEntity);
-        }
-        return savedEntity;
+  /**
+   * @param participant
+   * @return
+   */
+  @Override
+  public boolean updateGameParticipant(String gameId, String participant) {
+    gameRepository.updateMGameEntityParticipantByGameId(gameId, participant);
+    return true;
+  }
+
+  @Override
+  public boolean updateGameResult(String gameId, String result) {
+    gameRepository.updateMGameEntityResultByGameId(result, gameId);
+    return true;
+  }
+
+  @Override
+  public List<MUserEntity> getParticipantByGameId(String gameId) {
+    Logger.getGlobal().info(String.format("select * from game where gameId='%s'", gameId));
+    MGameEntity gameEntity = gameRepository.findMGameEntityByGameId(gameId);
+    if (gameEntity != null) {
+      String participant = gameEntity.getParticipant();
+      return JSONArray.parseArray(participant, MUserEntity.class);
+    } else {
+      return null;
     }
-
-    @Override
-    public boolean joinGame(String gameId, MUserEntity userEntity) {
-        MGameEntity gameEntity = gameRepository.findMGameEntityByGameId(gameId);
-        if (gameEntity != null) {
-            List<MUserEntity> array = JSONArray.parseArray(gameEntity.getParticipant(), MUserEntity.class);
-            if (userEntity != null) {
-                array.add(userEntity);
-            }
-            String users = JSON.toJSONString(array);
-            gameRepository.updateMGameEntityParticipantByGameId(users, gameId);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean updateGameResult(String gameId, String result) {
-        gameRepository.updateMGameEntityResultByGameId(result, gameId);
-        return true;
-    }
-
-    @Override
-    public List<MUserEntity> getParticipantByGameId(String gameId) {
-        Logger.getGlobal().info(String.format("select * from game where gameId='%s'", gameId));
-        MGameEntity gameEntity = gameRepository.findMGameEntityByGameId(gameId);
-        if (gameEntity != null) {
-            String participant = gameEntity.getParticipant();
-            return JSONArray.parseArray(participant, MUserEntity.class);
-        } else {
-            return null;
-        }
-    }
-
-
+  }
 }

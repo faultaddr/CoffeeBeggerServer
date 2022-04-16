@@ -22,41 +22,42 @@ import javax.servlet.http.HttpServletRequest;
 @EnableJpaRepositories(basePackages = "com.faultaddr.coffeebeggerserver.repository")
 public class CoffeeBeggerServerApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CoffeeBeggerServerApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(CoffeeBeggerServerApplication.class, args);
+  }
 
-    @Bean
-    public HttpMessageConverters fastJsonHttpMessageConverters() {
-        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
-        FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastConverter.setFastJsonConfig(fastJsonConfig);
-        return new HttpMessageConverters(fastConverter);
-    }
+  @Bean
+  public HttpMessageConverters fastJsonHttpMessageConverters() {
+    FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+    FastJsonConfig fastJsonConfig = new FastJsonConfig();
+    fastConverter.setFastJsonConfig(fastJsonConfig);
+    return new HttpMessageConverters(fastConverter);
+  }
 
-    @GetMapping("ws")
-    public String ws(Integer userId, HttpServletRequest request) {
-        request.setAttribute("userId", userId);
-        return "ws";
-    }
+  @GetMapping("ws")
+  public String ws(Integer userId, HttpServletRequest request) {
+    request.setAttribute("userId", userId);
+    return "ws";
+  }
 
-    /*  ------------------- 配置Redis序列化 ------------------- */
+  /*  ------------------- 配置Redis序列化 ------------------- */
 
-    @Bean
-    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory lettuceConnectionFactory) {
-        StringRedisTemplate template = new StringRedisTemplate(lettuceConnectionFactory);
-        template.setValueSerializer(valueSerializer());
-        template.afterPropertiesSet();
-        return template;
-    }
+  @Bean
+  public RedisTemplate<String, String> redisTemplate(
+      RedisConnectionFactory lettuceConnectionFactory) {
+    StringRedisTemplate template = new StringRedisTemplate(lettuceConnectionFactory);
+    template.setValueSerializer(valueSerializer());
+    template.afterPropertiesSet();
+    return template;
+  }
 
-    private Jackson2JsonRedisSerializer valueSerializer() {
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        ObjectMapper om = new ObjectMapper();
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
-        return jackson2JsonRedisSerializer;
-    }
-
+  private Jackson2JsonRedisSerializer valueSerializer() {
+    Jackson2JsonRedisSerializer jackson2JsonRedisSerializer =
+        new Jackson2JsonRedisSerializer(Object.class);
+    ObjectMapper om = new ObjectMapper();
+    om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+    om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+    jackson2JsonRedisSerializer.setObjectMapper(om);
+    return jackson2JsonRedisSerializer;
+  }
 }
