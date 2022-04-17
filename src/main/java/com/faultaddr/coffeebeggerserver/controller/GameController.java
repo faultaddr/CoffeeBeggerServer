@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Controller
 @EnableAutoConfiguration
@@ -80,6 +81,12 @@ public class GameController {
         APIResult apiResult = APIResult.createSuccessMessage(participant);
         apiResult.setCode(Constants.PARTICIPANT);
         senderService.send(userEntity.getAvatar(), JSON.toJSONString(apiResult));
+        participant.stream()
+            .forEach(
+                mUserEntity -> {
+                  Logger.getGlobal().info("SocketSender joinGame: ->" + mUserEntity.getAvatar());
+                  senderService.send(mUserEntity.getAvatar(), JSON.toJSONString(apiResult));
+                });
         return APIResult.createSuccessMessage(
             JSON.toJSONString(
                 new OutputMessage(gameEntity.getGameId(), "true", Message.MessageType.JOIN, time)));
@@ -112,8 +119,11 @@ public class GameController {
       result.setCode(Constants.RESULT);
       userList.stream()
           .forEach(
-              mUserEntity ->
-                  senderService.send(mUserEntity.getAvatar(), JSON.toJSONString(result)));
+              mUserEntity -> {
+                Logger.getGlobal().info("SocketSender startGame: ->" + mUserEntity.getAvatar());
+                senderService.send(mUserEntity.getAvatar(), JSON.toJSONString(result));
+              });
+
       return result;
     } else {
       return APIResult.createErrorMessage("without participant");
