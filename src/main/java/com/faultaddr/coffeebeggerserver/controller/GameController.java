@@ -37,7 +37,7 @@ public class GameController {
   @ResponseBody
   public APIResult createGame(@RequestBody MUserEntity userEntity) {
     String generatedGameId = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-    int generatedInvitationCode = new Random().nextInt(999999);
+    int generatedInvitationCode = (int) ((Math.random() * 9 + 1) * 100000);
     MGameEntity gameEntity =
         gameService.createGame(generatedGameId, generatedInvitationCode, userEntity);
     return APIResult.createSuccessMessage(gameEntity);
@@ -69,28 +69,22 @@ public class GameController {
       boolean matchResult =
           participant.stream()
               .anyMatch(mUserEntity -> mUserEntity.getAvatar().equals(userEntity.getAvatar()));
-      if (matchResult) {
-
-        return APIResult.createSuccessMessage(
-            JSON.toJSONString(
-                new OutputMessage(gameEntity.getGameId(), "true", Message.MessageType.JOIN, time)));
-      } else {
+      APIResult apiResult;
+      if (!matchResult) {
         participant.add(userEntity);
         String participantStr = JSON.toJSONString(participant);
         boolean result = gameService.updateGameParticipant(gameEntity.getGameId(), participantStr);
-        APIResult apiResult = APIResult.createSuccessMessage(participant);
-        apiResult.setCode(Constants.PARTICIPANT);
-        senderService.send(userEntity.getAvatar(), JSON.toJSONString(apiResult));
-        participant.stream()
-            .forEach(
-                mUserEntity -> {
-                  Logger.getGlobal().info("SocketSender joinGame: ->" + mUserEntity.getAvatar());
-                  senderService.send(mUserEntity.getAvatar(), JSON.toJSONString(apiResult));
-                });
-        return APIResult.createSuccessMessage(
-            JSON.toJSONString(
-                new OutputMessage(gameEntity.getGameId(), "true", Message.MessageType.JOIN, time)));
       }
+      apiResult = APIResult.createSuccessMessage(participant);
+      apiResult.setCode(Constants.PARTICIPANT);
+      participant.forEach(
+          mUserEntity -> {
+            Logger.getGlobal().info("SocketSender joinGame: ->" + mUserEntity.getAvatar());
+            senderService.send(mUserEntity.getAvatar(), JSON.toJSONString(apiResult));
+          });
+      return APIResult.createSuccessMessage(
+          JSON.toJSONString(
+              new OutputMessage(gameEntity.getGameId(), "true", Message.MessageType.JOIN, time)));
     } else {
       boolean result = gameService.joinGame(form.getId(), userEntity);
       return APIResult.createSuccessMessage("" + result);
